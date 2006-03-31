@@ -1,3 +1,5 @@
+# Revision $Revision$ ( $Date$ ) - $Source$
+
 package WWW::Yahoo::KeywordExtractor;
 
 use warnings;
@@ -8,7 +10,7 @@ use LWP::UserAgent;
 use URI::Escape;
 use XML::Simple;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub new {
 	my ($class, %args) = @_;
@@ -33,6 +35,11 @@ sub extract {
 	}
 	return $self->{'__cache'.$content_hash};
 }
+
+1;
+__END__
+
+=pod
 
 =head1 NAME
 
@@ -87,6 +94,10 @@ You can also look for information at:
 
 =over 4
 
+=item * WWW-Yahoo-KeywordExtractor SVN Repository
+
+L<http://code.sixapart.com/svn/WWW-Yahoo-KeywordExtractor>
+
 =item * AnnoCPAN: Annotated CPAN documentation
 
 L<http://annocpan.org/dist/WWW-Yahoo-KeywordExtractor>
@@ -117,5 +128,3 @@ This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 =cut
-
-1;
