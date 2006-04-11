@@ -1,4 +1,4 @@
-# Revision $Revision$ ( $Date$ ) - $Source$
+# $Revision $ ( $Date $ ) - $Source $
 
 package WWW::Yahoo::KeywordExtractor;
 
@@ -7,10 +7,9 @@ use strict;
 
 use Digest::MD5 qw(md5_hex);
 use LWP::UserAgent;
-use URI::Escape;
 use XML::Simple;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub new {
 	my ($class, %args) = @_;
@@ -24,7 +23,14 @@ sub extract {
 	if (! $args{'content'}) { die 'No content specified'; }
 	my $content_hash = md5_hex($args{'content'});
 	if (! $self->{'__cache'.$content_hash}) {
-		my $response = $self->{'ua'}->get('http://api.search.yahoo.com/ContentAnalysisService/V1/termExtraction?appid=WWWYahooKeywordExtractor&query=null&context='.uri_escape($args{'content'}));
+		my $ua = $self->{'ua'};
+		my %form = (
+			'appid' => 'WWWYahooKeywordExtractor',
+			'query' => 'null',
+			'context' => $args{'content'},
+		);
+		my $url = 'http://api.search.yahoo.com/ContentAnalysisService/V1/termExtraction';
+		my $response = $ua->post( $url, \%form );
 		if (! $response->is_success) {
 			die "Error getting data!\n";
 		}
@@ -119,6 +125,9 @@ L<http://search.cpan.org/dist/WWW-Yahoo-KeywordExtractor>
 =head1 ACKNOWLEDGEMENTS
 
 Thanks to the bright developers at Yahoo for creating a nifty keyword API.
+
+Subbu Allamaraju ( http://www.subbu.org ) gave some good feedback and is also
+worth mentioning here.
 
 =head1 COPYRIGHT & LICENSE
 
