@@ -1,8 +1,12 @@
---- #YAML:1.0
-name: WWW-Yahoo-KeywordExtractor
-version: 0.04
-author:
-  - Nick Gerakines <nick@socklabs.com>
-abstract: Get keywords from summary text via the Yahoo API
-license: perl
-generated_by: Module::Build version 0.2612, without YAML.pm
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         WWW-Yahoo-KeywordExtractor
+version:      0.5
+version_from: lib/WWW/Yahoo/KeywordExtractor.pm
+installdirs:  site
+requires:
+    LWP::UserAgent:                0
+    Test::More:                    0
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.17

@@ -1,45 +1,39 @@
-# $Revision $ ( $Date $ ) - $Source $
-
 package WWW::Yahoo::KeywordExtractor;
 
-use warnings;
 use strict;
+use warnings;
 
-use Digest::MD5 qw(md5_hex);
 use LWP::UserAgent;
-use XML::Simple;
 
-our $VERSION = '0.04';
+use constant KEYWORD_API_URL => 'http://api.search.yahoo.com/ContentAnalysisService/V1/termExtraction';
+
+our $VERSION = '0.5';
 
 sub new {
 	my ($class, %args) = @_;
 	my $self = bless {%args}, $class;
-	$self->{'ua'} = LWP::UserAgent->new;
 	return $self;
 }
 
 sub extract {
-	my ($self, %args) = @_;
-	if (! $args{'content'}) { die 'No content specified'; }
-	my $content_hash = md5_hex($args{'content'});
-	if (! $self->{'__cache'.$content_hash}) {
-		my $ua = $self->{'ua'};
-		my %form = (
-			'appid' => 'WWWYahooKeywordExtractor',
-			'query' => 'null',
-			'context' => $args{'content'},
-		);
-		my $url = 'http://api.search.yahoo.com/ContentAnalysisService/V1/termExtraction';
-		my $response = $ua->post( $url, \%form );
-		if (! $response->is_success) {
-			die "Error getting data!\n";
-		}
-		my $xml = $response->content;
-		my $ref = XMLin($xml, ForceArray => [ 'Result' ]);
-		my @results = @{$ref->{'Result'}};
-		$self->{'__cache'.$content_hash} = \@results;
-	}
-	return $self->{'__cache'.$content_hash};
+    my ($self, $content) = @_;
+    if (! $content) { die 'No content specified'; }
+    my $ua = LWP::UserAgent->new();
+    my $response = $ua->post(
+        KEYWORD_API_URL,
+        { 'appid' => 'WWWYahooKeywordExtractor',
+        'query' => 'null',
+        'context' => $content, }
+    );
+    if (! $response->is_success()) {
+    	die "Error getting data!\n";
+    }
+    my $xml = $response->content();
+    my @results = ();
+    while ($xml =~ m!<Result>([^<]*)</Result>!g) {
+        push @results, $1;
+    }
+    return \@results;
 }
 
 1;
@@ -58,7 +52,7 @@ a list of relevant keywords.
 
   use WWW::Yahoo::KeywordExtractor;
   my $yke = WWW::Yahoo::KeywordExtractor->new();
-  my $keywords = $yke->extract(content => 'My wife and I love to cook together. Carolyn surprises me with new things to love about her everyday.');
+  my $keywords = $yke->extract('My wife and I love to cook together. Carolyn surprises me with new things to love about her everyday.');
   print join q{}. 'Keyword 1: ', $keywords->[0], "\n";
 
 =head1 SUBROUTINES/METHOD
@@ -72,11 +66,8 @@ The new subroutine creates and returns a WWW:Yahoo::KeywordExtractor object.
 This method will return a list of keywords based on sample data. It will die
 if there is no 'content' arg given.
 
-=head1 CACHING
-
-This module will attempt to cache its data locally. It does this by creating
-content cache keys which are md5 hashes of content. Sooner or later I will
-update this module to also provide a list of content cache keys.
+Note: In older versions this method would also cache the keywords returned,
+however this is no longer the case.
 
 =head1 AUTHOR
 

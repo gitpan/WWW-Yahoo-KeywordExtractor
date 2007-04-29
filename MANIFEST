@@ -1,6 +1,7 @@
-Build.PL
+Makefile.PL
 Changes
 MANIFEST
+MANIFEST.skip
 META.yml # Will be created by "make dist"
 README
 lib/WWW/Yahoo/KeywordExtractor.pm

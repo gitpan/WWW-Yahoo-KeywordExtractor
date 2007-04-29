@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 
-use Data::Dumper;
 use Test::More tests => 5;
 
 use_ok( 'WWW::Yahoo::KeywordExtractor' );
@@ -19,14 +18,14 @@ my ($yke, $keywords);
 }
 
 {
-	$keywords = $yke->extract('content' => 'This is a test paragraph.');
-	$keywords = $yke->extract('content' => 'This is a test paragraph. It has lots of funny and cool sentances. Last night we cooked from a really cool book that we got a the store Williams and Sanoma.');
-	$keywords = $yke->extract('content' => 'test test test');
+	$keywords = $yke->extract('This is a test paragraph.');
+	$keywords = $yke->extract('This is a test paragraph. It has lots of funny and cool sentances. Last night we cooked from a really cool book that we got a the store Williams and Sanoma.');
+	$keywords = $yke->extract('test test test');
 }
 
 {
-	eval { $keywords = $yke->extract('content' => ''); };
+	eval { $keywords = $yke->extract(''); };
 	like($@, qr/No content specified/ , 'empty content test - empty');
-	eval { $keywords = $yke->extract('content' => undef); };
+	eval { $keywords = $yke->extract(undef); };
 	like($@, qr/No content specified/ , 'empty content test - undef');
 }
