@@ -7,7 +7,7 @@ use LWP::UserAgent;
 
 use constant KEYWORD_API_URL => 'http://api.search.yahoo.com/ContentAnalysisService/V1/termExtraction';
 
-our $VERSION = '0.5';
+our $VERSION = '0.5.2';
 
 sub new {
 	my ($class, %args) = @_;
